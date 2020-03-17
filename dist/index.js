@@ -1042,7 +1042,13 @@ function run() {
             if (runTest !== 'false') {
                 process.chdir(buildDir);
                 core.startGroup('Running CTest');
-                yield exec.exec('ctest', [`-j${parallel}`, ...ctestOptions]);
+                yield exec.exec('ctest', [
+                    // -C is required for MSBuild otherwise it won't run tests
+                    '-C',
+                    buildType,
+                    `-j${parallel}`,
+                    ...ctestOptions
+                ]);
                 core.endGroup();
                 process.chdir(sourceDir);
             }

@@ -80,7 +80,13 @@ async function run(): Promise<void> {
     if (runTest !== 'false') {
       process.chdir(buildDir)
       core.startGroup('Running CTest')
-      await exec.exec('ctest', [`-j${parallel}`, ...ctestOptions])
+      await exec.exec('ctest', [
+        // -C is required for MSBuild otherwise it won't run tests
+        '-C',
+        buildType,
+        `-j${parallel}`,
+        ...ctestOptions
+      ])
       core.endGroup()
       process.chdir(sourceDir)
     }

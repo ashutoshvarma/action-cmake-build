@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import * as io from '@actions/io'
 import * as exec from '@actions/exec'
 import * as path from 'path'
+import {fixPath} from '../src/util'
 
 async function run(): Promise<void> {
   try {
@@ -75,14 +76,6 @@ async function run(): Promise<void> {
   } catch (error) {
     core.setFailed(error.message)
   }
-}
-
-export async function fixPath(oldPath: string): Promise<string> {
-  const shDir: string = await io.which('sh.exe')
-  if (shDir !== '') {
-    oldPath = oldPath.replace(path.dirname(shDir), 'DUMMY_PATH')
-  }
-  return oldPath
 }
 
 run()

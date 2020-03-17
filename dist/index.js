@@ -978,17 +978,17 @@ const util_1 = __webpack_require__(345);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const buildType = core.getInput('build-type') || 'Release';
+            const buildType = core.getInput('build-type');
             const installBuild = core.getInput('install-build');
             const runTest = core.getInput('run-test');
             const submoduleUpdate = core.getInput('submodule-update');
-            const cc = core.getInput('cc') || 'gcc';
-            const cxx = core.getInput('cxx') || 'g++';
-            const target = core.getInput('target') || 'all';
-            const parallel = core.getInput('parallel') || '4';
+            const cc = core.getInput('cc');
+            const cxx = core.getInput('cxx');
+            const target = core.getInput('target');
+            const parallel = core.getInput('parallel');
             const options = core.getInput('options').split(' ');
             const ctestOptions = core.getInput('ctest-options').split(' ');
-            let buildDir = core.getInput('build-dir') || 'build';
+            let buildDir = core.getInput('build-dir');
             // update git submodule
             if (submoduleUpdate !== 'false') {
                 core.startGroup('Updating Git Submodules');

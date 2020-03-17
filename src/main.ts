@@ -6,17 +6,17 @@ import {fixPath} from './util'
 
 async function run(): Promise<void> {
   try {
-    const buildType: string = core.getInput('build-type') || 'Release'
+    const buildType: string = core.getInput('build-type')
     const installBuild: string = core.getInput('install-build')
     const runTest: string = core.getInput('run-test')
     const submoduleUpdate: string = core.getInput('submodule-update')
-    const cc: string = core.getInput('cc') || 'gcc'
-    const cxx: string = core.getInput('cxx') || 'g++'
-    const target: string = core.getInput('target') || 'all'
-    const parallel: string = core.getInput('parallel') || '4'
+    const cc: string = core.getInput('cc')
+    const cxx: string = core.getInput('cxx')
+    const target: string = core.getInput('target')
+    const parallel: string = core.getInput('parallel')
     const options: string[] = core.getInput('options').split(' ')
     const ctestOptions: string[] = core.getInput('ctest-options').split(' ')
-    let buildDir: string = core.getInput('build-dir') || 'build'
+    let buildDir: string = core.getInput('build-dir')
 
     // update git submodule
     if (submoduleUpdate !== 'false') {

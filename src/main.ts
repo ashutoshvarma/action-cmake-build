@@ -20,7 +20,9 @@ async function run(): Promise<void> {
 
     // update git submodule
     if (submoduleUpdate !== 'false') {
+      core.startGroup('Updating Git Submodules')
       await exec.exec('git', ['submodule', 'update', '--init', '--recursive'])
+      core.endGroup()
     }
 
     // setup build directory

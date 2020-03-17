@@ -991,7 +991,9 @@ function run() {
             let buildDir = core.getInput('build-dir') || 'build';
             // update git submodule
             if (submoduleUpdate !== 'false') {
+                core.startGroup('Updating Git Submodules');
                 yield exec.exec('git', ['submodule', 'update', '--init', '--recursive']);
+                core.endGroup();
             }
             // setup build directory
             buildDir = path.join(__dirname, buildDir);

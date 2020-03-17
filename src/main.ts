@@ -36,6 +36,8 @@ async function run(): Promise<void> {
     //fix path by removing sh.exe
     core.startGroup('Fixing Path')
     await fixPath()
+    // eslint-disable-next-line no-console
+    console.log(process.env.PATH)
     core.endGroup()
 
     //configure options

@@ -1004,6 +1004,8 @@ function run() {
             //fix path by removing sh.exe
             core.startGroup('Fixing Path');
             yield util_1.fixPath();
+            // eslint-disable-next-line no-console
+            console.log(process.env.PATH);
             core.endGroup();
             //configure options
             const configOptions = [

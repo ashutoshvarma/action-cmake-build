@@ -1017,10 +1017,12 @@ function run() {
                 buildDir,
                 '--config',
                 buildType,
-                '--target',
-                target,
                 `-j${parallel}`
             ];
+            if (target !== '') {
+                buildOptions.push('--target');
+                buildOptions.push(target);
+            }
             //Configure CMake
             core.startGroup('Configure CMake');
             yield exec.exec('cmake', configOptions);

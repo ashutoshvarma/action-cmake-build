@@ -13,7 +13,6 @@ inputs:
     default: 'g++'
   target:
     description: CMake build target
-    default: all
   parallel:
     description: Number of concurrent jobs for build and test
     default: 4

@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import * as io from '@actions/io'
 import * as exec from '@actions/exec'
 import * as path from 'path'
-import {fixPath} from '../src/util'
+import {fixPath} from './util'
 
 async function run(): Promise<void> {
   try {

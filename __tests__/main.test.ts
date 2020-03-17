@@ -1,8 +1,8 @@
-import {fixPath}  from '../src/util'
+import {fixPath} from '../src/util'
+import * as io from '@actions/io'
 
-test("test path fix", () =>{
-  let testPath = 'C:\\Program Files\\Git\\mingw64\\bin;C:\\Program Files\\Git\\usr\\bin;C:\\Users\\Ashutosh\\bin;C:\\Python27\\;C:\\Python27\\Scripts;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem'
-  let fixedPath = 'C:\\Program Files\\Git\\mingw64\\bin;DUMMY_PATH;C:\\Users\\Ashutosh\\bin;C:\\Python27\\;C:\\Python27\\Scripts;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem'
-  return expect(fixPath(testPath)).resolves.toBe(fixedPath)
+test('test path fix', async () => {
+  process.env.PATH = await fixPath(<string>process.env.PATH)
+  let shPath:string = await io.which('sh.exe')
+  expect(shPath).toBe('')
 })
-

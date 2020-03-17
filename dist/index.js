@@ -974,13 +974,14 @@ const core = __importStar(__webpack_require__(470));
 const io = __importStar(__webpack_require__(1));
 const exec = __importStar(__webpack_require__(986));
 const path = __importStar(__webpack_require__(622));
-const util_1 = __webpack_require__(322);
+const util_1 = __webpack_require__(345);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const buildType = core.getInput('build-type') || 'Release';
             const installBuild = core.getInput('install-build');
             const runTest = core.getInput('run-test');
+            const submoduleUpdate = core.getInput('submodule-update');
             const cc = core.getInput('cc') || 'gcc';
             const cxx = core.getInput('cxx') || 'g++';
             const target = core.getInput('target') || 'all';
@@ -988,6 +989,10 @@ function run() {
             const options = core.getInput('options').split(' ');
             const ctestOptions = core.getInput('ctest-options').split(' ');
             let buildDir = core.getInput('build-dir') || 'build';
+            // update git submodule
+            if (submoduleUpdate !== 'false') {
+                yield exec.exec('git', ['submodule', 'update', '--init', '--recursive']);
+            }
             // setup build directory
             buildDir = path.join(__dirname, buildDir);
             yield io.mkdirP(buildDir);
@@ -996,7 +1001,7 @@ function run() {
             core.exportVariable('CXX', cxx);
             //fix path by removing sh.exe
             core.startGroup('Fixing Path');
-            core.exportVariable('PATH', yield util_1.fixPath(process.env.PATH));
+            yield util_1.fixPath();
             core.endGroup();
             //configure options
             const configOptions = [
@@ -1023,14 +1028,14 @@ function run() {
             yield exec.exec('cmake', buildOptions);
             core.endGroup();
             // Install Targets
-            if (installBuild !== '') {
-                core.startGroup(`Installing Build`);
-                yield exec.exec('cmake', ['--install']);
+            if (installBuild !== 'false') {
+                core.startGroup(`Installing Build - ${installBuild}`);
+                yield exec.exec('cmake', ['--install', buildDir]);
                 core.endGroup();
             }
             // Run Ctest
             const sourceDir = process.cwd();
-            if (runTest !== '') {
+            if (runTest !== 'false') {
                 process.chdir(buildDir);
                 core.startGroup('Running CTest');
                 yield exec.exec('ctest', [`-j${parallel}`, ...ctestOptions]);
@@ -1048,7 +1053,7 @@ run();
 
 /***/ }),
 
-/***/ 322:
+/***/ 345:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
 "use strict";

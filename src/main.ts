@@ -65,8 +65,8 @@ async function run(): Promise<void> {
 
     // Install Targets
     if (installBuild !== 'false') {
-      core.startGroup(`Installing Build`)
-      await exec.exec('cmake', ['--install'])
+      core.startGroup(`Installing Build - ${installBuild}`)
+      await exec.exec('cmake', ['--install', buildDir])
       core.endGroup()
     }
 

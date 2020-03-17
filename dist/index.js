@@ -1071,14 +1071,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const io = __importStar(__webpack_require__(1));
+const core = __importStar(__webpack_require__(470));
 const path = __importStar(__webpack_require__(622));
-function fixPath(oldPath) {
+function fixPath() {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const shDir = yield io.which('sh.exe');
+        let shDir = yield io.which('sh.exe');
         if (shDir !== '') {
-            oldPath = oldPath.replace(path.dirname(shDir), 'DUMMY_PATH');
+            const envPath = ((_a = process.env.PATH) === null || _a === void 0 ? void 0 : _a.replace(path.dirname(shDir), 'DUMMY_PATH'));
+            core.exportVariable('PATH', envPath);
+            shDir = yield io.which('sh.exe');
+            if (shDir !== '') {
+                yield fixPath();
+            }
         }
-        return oldPath;
     });
 }
 exports.fixPath = fixPath;

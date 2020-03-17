@@ -19,7 +19,7 @@ async function run(): Promise<void> {
     let buildDir: string = core.getInput('build-dir') || 'build'
 
     // update git submodule
-    if (submoduleUpdate !== '') {
+    if (submoduleUpdate !== 'false') {
       await exec.exec('git', ['submodule', 'update', '--init', '--recursive'])
     }
 
@@ -64,7 +64,7 @@ async function run(): Promise<void> {
     core.endGroup()
 
     // Install Targets
-    if (installBuild !== '') {
+    if (installBuild !== 'false') {
       core.startGroup(`Installing Build`)
       await exec.exec('cmake', ['--install'])
       core.endGroup()
@@ -72,7 +72,7 @@ async function run(): Promise<void> {
 
     // Run Ctest
     const sourceDir: string = process.cwd()
-    if (runTest !== '') {
+    if (runTest !== 'false') {
       process.chdir(buildDir)
       core.startGroup('Running CTest')
       await exec.exec('ctest', [`-j${parallel}`, ...ctestOptions])

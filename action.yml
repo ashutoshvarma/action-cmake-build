@@ -26,6 +26,9 @@ inputs:
   install-build:
     description: Run 'cmake --install' or not
     default: false
+  submodule-update:
+    description: Update git submodules
+    default: false
   options:
     description: Misc Options to pass to CMake while configuring project
   ctest-options:

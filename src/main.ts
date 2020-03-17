@@ -27,7 +27,7 @@ async function run(): Promise<void> {
 
     //fix path by removing sh.exe
     core.startGroup('Fixing Path')
-    core.exportVariable('PATH', await fixPath(<string>process.env.PATH))
+    await fixPath()
     core.endGroup()
 
     //configure options

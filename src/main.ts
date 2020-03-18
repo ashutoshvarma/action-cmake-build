@@ -42,7 +42,7 @@ async function run(): Promise<void> {
     //configure options
     const configOptions = [
       `-DCMAKE_BUILD_TYPE=${buildType}`,
-      `-H${srcDir}`,
+      `-S${srcDir}`,
       `-B${buildDir}`,
       ...options
     ]

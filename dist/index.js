@@ -1009,7 +1009,7 @@ function run() {
             //configure options
             const configOptions = [
                 `-DCMAKE_BUILD_TYPE=${buildType}`,
-                `-H${srcDir}`,
+                `-S${srcDir}`,
                 `-B${buildDir}`,
                 ...options
             ];

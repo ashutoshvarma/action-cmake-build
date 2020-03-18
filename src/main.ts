@@ -1,7 +1,6 @@
 import * as core from '@actions/core'
 import * as io from '@actions/io'
 import * as exec from '@actions/exec'
-import * as path from 'path'
 import {fixPath} from './util'
 
 async function run(): Promise<void> {
@@ -16,7 +15,8 @@ async function run(): Promise<void> {
     const parallel: string = core.getInput('parallel')
     const options: string[] = core.getInput('options').split(' ')
     const ctestOptions: string[] = core.getInput('ctest-options').split(' ')
-    let buildDir: string = core.getInput('build-dir')
+    const buildDir: string = core.getInput('build-dir')
+    const srcDir: string = process.cwd()
 
     // update git submodule
     if (submoduleUpdate !== 'false') {
@@ -26,7 +26,6 @@ async function run(): Promise<void> {
     }
 
     // setup build directory
-    buildDir = path.join(__dirname, buildDir)
     await io.mkdirP(buildDir)
 
     //export CC & CXX
@@ -43,7 +42,7 @@ async function run(): Promise<void> {
     //configure options
     const configOptions = [
       `-DCMAKE_BUILD_TYPE=${buildType}`,
-      `-H${__dirname}`,
+      `-H${srcDir}`,
       `-B${buildDir}`,
       ...options
     ]

@@ -973,7 +973,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const io = __importStar(__webpack_require__(1));
 const exec = __importStar(__webpack_require__(986));
-const path = __importStar(__webpack_require__(622));
 const util_1 = __webpack_require__(345);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -988,7 +987,8 @@ function run() {
             const parallel = core.getInput('parallel');
             const options = core.getInput('options').split(' ');
             const ctestOptions = core.getInput('ctest-options').split(' ');
-            let buildDir = core.getInput('build-dir');
+            const buildDir = core.getInput('build-dir');
+            const srcDir = process.cwd();
             // update git submodule
             if (submoduleUpdate !== 'false') {
                 core.startGroup('Updating Git Submodules');
@@ -996,7 +996,6 @@ function run() {
                 core.endGroup();
             }
             // setup build directory
-            buildDir = path.join(__dirname, buildDir);
             yield io.mkdirP(buildDir);
             //export CC & CXX
             core.exportVariable('CC', cc);
@@ -1010,7 +1009,7 @@ function run() {
             //configure options
             const configOptions = [
                 `-DCMAKE_BUILD_TYPE=${buildType}`,
-                `-H${__dirname}`,
+                `-H${srcDir}`,
                 `-B${buildDir}`,
                 ...options
             ];

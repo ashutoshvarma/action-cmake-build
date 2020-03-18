@@ -17,8 +17,8 @@ inputs:
     description: Number of concurrent jobs for build and test
     default: 4
   build-dir:
-    description: Relative path of build directory with respect to root of repo
-    default: build
+    description: Build directory where build files will be generated
+    default: ${{ runner.workspace }}/build
   run-test:
     description: Run CTest or not
     default: false

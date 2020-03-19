@@ -40,5 +40,5 @@ runs:
   main: 'dist/index.js'
 
 branding:
-  icon: 'terminal'  
-  color: 'feather'
+  icon: 'feather'  
+  color: 'blue'

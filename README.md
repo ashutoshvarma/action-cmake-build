@@ -1,101 +1,35 @@
-<p align="center">
-  <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
-</p>
+![Main workflow](https://github.com/ashutoshvarma/action-cmake-build/workflows/Main%20workflow/badge.svg)
 
-# Create a JavaScript Action using TypeScript
+# action-cmake-build
 
-Use this template to bootstrap the creation of a JavaScript action.:rocket:
+Build & Test CMake Projects with GitHub workflows.   
 
-This template includes compilication support, tests, a validation workflow, publishing, and versioning guidance.  
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
-
-## Create an action from this template
-
-Click the `Use this Template` and provide the new repo details for your action
-
-## Code in Master
-
-Install the dependencies  
-```bash
-$ npm install
-```
-
-Build the typescript and package it for distribution
-```bash
-$ npm run build && npm run pack
-```
-
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
-
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
-
-...
-```
-
-## Change action.yml
-
-The action.yml contains defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-import * as core from '@actions/core';
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
-
-## Publish to a distribution branch
-
-Actions are run from GitHub repos so we will checkin the packed dist folder. 
-
-Then run [ncc](https://github.com/zeit/ncc) and push the results:
-```bash
-$ npm run pack
-$ git add dist
-$ git commit -a -m "prod dependencies"
-$ git push origin releases/v1
-```
-
-Your action is now published! :rocket: 
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Validate
-
-You can now validate the action by referencing `./` in a workflow in your repo (see [test.yml](.github/workflows/test.yml)])
-
+## Quickstart
+This acion does not manage dependencies for you, all the dependencies for your project should be resolved before using this action.
 ```yaml
-uses: ./
-with:
-  milliseconds: 1000
+   - name: Build & Test
+        uses: ashutoshvarma/action-cmake-build@master
+        with:
+          build-dir: ${{ runner.workspace }}/build
+          # will set the CC & CXX for cmake
+          cc: gcc
+          cxx: g++
+          build-type: Release
+          # Extra options pass to cmake while configuring project
+          options: -DCMAKE_C_FLAGS=-w32 -DPNG_INCLUDE=OFF
+          run-test: true
+          ctest-options: -R mytest
+          # install the build using cmake --install
+          install-build: true
+          # run build using '-j [parallel]' to use multiple threads to build
+          parallel: 14
 ```
 
-See the [actions tab](https://github.com/actions/javascript-action/actions) for runs of this action! :rocket:
+### Action Reference: All Input/Output & Defaults
+[action.yml](https://github.com/ashutoshvarma/action-cmake-build/blob/master/action.yml) 
 
-## Usage:
+## License
+All the content in this repository is licensed under the MIT License.
 
-After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
+Copyright (c) 2019-2020 Ashutosh Varma

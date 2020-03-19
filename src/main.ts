@@ -15,6 +15,7 @@ async function run(): Promise<void> {
     const parallel: string = core.getInput('parallel')
     const options: string[] = core.getInput('options').split(' ')
     const ctestOptions: string[] = core.getInput('ctest-options').split(' ')
+    const buildOptions: string[] = core.getInput('build-options').split(' ')
     const buildDir: string = core.getInput('build-dir')
     const srcDir: string = process.cwd()
 
@@ -44,14 +45,7 @@ async function run(): Promise<void> {
       ...options,
       `-DCMAKE_BUILD_TYPE=${buildType}`,
       `-S${srcDir}`,
-      `-B${buildDir}`,
-    ]
-    const buildOptions = [
-      '--build',
-      buildDir,
-      '--config',
-      buildType,
-      `-j${parallel}`
+      `-B${buildDir}`
     ]
 
     if (target !== '') {
@@ -66,7 +60,14 @@ async function run(): Promise<void> {
 
     //Build CMake Project
     core.startGroup(`Build Target - ${target}`)
-    await exec.exec('cmake', buildOptions)
+    await exec.exec('cmake', [
+      '--build',
+      buildDir,
+      '--config',
+      buildType,
+      ...buildOptions,
+      `-j${parallel}`
+    ])
     core.endGroup()
 
     // Install Targets

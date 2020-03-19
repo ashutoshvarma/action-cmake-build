@@ -30,6 +30,8 @@ inputs:
     default: false
   options:
     description: Misc Options to pass to CMake while configuring project
+  build-options:
+    description: Misc Options to pass to CMake while building project using cmake --build
   ctest-options:
     description: Misc Options to pass to CTest
   

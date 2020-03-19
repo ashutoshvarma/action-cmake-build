@@ -953,6 +953,28 @@ module.exports = require("child_process");
 
 "use strict";
 
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Ashutosh Varma
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ * Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+ * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+ * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -987,6 +1009,7 @@ function run() {
             const parallel = core.getInput('parallel');
             const options = core.getInput('options').split(' ');
             const ctestOptions = core.getInput('ctest-options').split(' ');
+            const buildOptions = core.getInput('build-options').split(' ');
             const buildDir = core.getInput('build-dir');
             const srcDir = process.cwd();
             // update git submodule
@@ -1011,14 +1034,7 @@ function run() {
                 ...options,
                 `-DCMAKE_BUILD_TYPE=${buildType}`,
                 `-S${srcDir}`,
-                `-B${buildDir}`,
-            ];
-            const buildOptions = [
-                '--build',
-                buildDir,
-                '--config',
-                buildType,
-                `-j${parallel}`
+                `-B${buildDir}`
             ];
             if (target !== '') {
                 buildOptions.push('--target');
@@ -1030,7 +1046,14 @@ function run() {
             core.endGroup();
             //Build CMake Project
             core.startGroup(`Build Target - ${target}`);
-            yield exec.exec('cmake', buildOptions);
+            yield exec.exec('cmake', [
+                '--build',
+                buildDir,
+                '--config',
+                buildType,
+                ...buildOptions,
+                `-j${parallel}`
+            ]);
             core.endGroup();
             // Install Targets
             if (installBuild !== 'false') {
@@ -1086,6 +1109,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Ashutosh Varma
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ * Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+ * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+ * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 const io = __importStar(__webpack_require__(1));
 const core = __importStar(__webpack_require__(470));
 const path = __importStar(__webpack_require__(622));

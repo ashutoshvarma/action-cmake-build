@@ -88,7 +88,7 @@ async function run(): Promise<void> {
       buildDir,
       '--config',
       buildType,
-      ...buildOptions,
+      // ...buildOptions,
       `-j${parallel}`
     ])
     core.endGroup()

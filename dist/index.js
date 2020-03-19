@@ -1051,7 +1051,7 @@ function run() {
                 buildDir,
                 '--config',
                 buildType,
-                ...buildOptions,
+                // ...buildOptions,
                 `-j${parallel}`
             ]);
             core.endGroup();

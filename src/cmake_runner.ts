@@ -17,7 +17,7 @@ export interface CMakeOptions {
 
 export class CMakeRunner {
   _cmake: string = 'cmake'
-  _ctest: string = 'cmake'
+  _ctest: string = 'ctest'
   _options: CMakeOptions
   _rootDir: string
   _buildDir: string

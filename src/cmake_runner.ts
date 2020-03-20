@@ -1,4 +1,5 @@
 import * as exec from '@actions/exec'
+import * as core from '@actions/core'
 
 export interface CMakeExtraArgs {
   extraConfigArgs?: string
@@ -26,16 +27,25 @@ export class CMakeRunner {
     this._buildDir = buildDir
   }
 
+  async run(executable: string, args?: string[]): Promise<number> {
+    try {
+      return await exec.exec(executable, args)
+    } catch (error) {
+      core.setFailed(error.message)
+    }
+    return -1
+  }
+
   async cmake(args?: string[]): Promise<number> {
     // console.log('cmake ' + args?.join(' '))
     // return new Promise<number>((resolve) => {})
-    return exec.exec(this._cmake, args)
+    return await this.run(this._cmake, args)
   }
 
   async ctest(args?: string[]): Promise<number> {
     // console.log('cmake ' + args?.join(' '))
     // return new Promise<number>((resolve) => {})
-    return exec.exec(this._ctest, args)
+    return await this.run(this._ctest, args)
   }
 
   async configure(): Promise<number> {

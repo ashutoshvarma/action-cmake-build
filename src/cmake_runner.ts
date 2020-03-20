@@ -104,7 +104,10 @@ export class CMakeRunner {
     // '-C' is required for multiconfig build systems
     let execOptions: string[] = ['-C', this._options.buildType]
     if (this._options.extraArgs?.extraTestArgs) {
-      execOptions = [...execOptions, ...this._options.extraArgs.extraTestArgs]
+      execOptions = [
+        ...execOptions,
+        ...this._options.extraArgs.extraTestArgs.split(' ')
+      ]
     }
     const result: Promise<number> = this.ctest(execOptions)
     process.chdir(pwdCurrent)

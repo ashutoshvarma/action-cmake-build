@@ -1065,7 +1065,7 @@ class CMakeRunner {
                     ...this._options.extraArgs.extraTestArgs.split(' ')
                 ];
             }
-            const result = this.ctest(execOptions);
+            const result = yield this.ctest(execOptions);
             process.chdir(pwdCurrent);
             return result;
         });

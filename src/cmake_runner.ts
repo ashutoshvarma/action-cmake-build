@@ -109,7 +109,7 @@ export class CMakeRunner {
         ...this._options.extraArgs.extraTestArgs.split(' ')
       ]
     }
-    const result: Promise<number> = this.ctest(execOptions)
+    const result: number = await this.ctest(execOptions)
     process.chdir(pwdCurrent)
     return result
   }

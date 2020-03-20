@@ -43,6 +43,10 @@ async function run(): Promise<void> {
     const buildDir: string = core.getInput('build-dir')
     const srcDir: string = process.cwd()
 
+    if (!buildDir) {
+      throw Error('Build Directory is not specified')
+    }
+
     // update git submodule
     if (submoduleUpdate !== 'false') {
       core.startGroup('Updating Git Submodules')

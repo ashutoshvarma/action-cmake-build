@@ -995,7 +995,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const io = __importStar(__webpack_require__(1));
 const exec = __importStar(__webpack_require__(986));
-const util_1 = __webpack_require__(345);
+const util = __importStar(__webpack_require__(345));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -1015,7 +1015,7 @@ function run() {
             // update git submodule
             if (submoduleUpdate !== 'false') {
                 core.startGroup('Updating Git Submodules');
-                yield exec.exec('git', ['submodule', 'update', '--init', '--recursive']);
+                yield util.updateSubmodules();
                 core.endGroup();
             }
             // setup build directory
@@ -1025,7 +1025,7 @@ function run() {
             core.exportVariable('CXX', cxx);
             //fix path by removing sh.exe
             core.startGroup('Fixing Path');
-            yield util_1.fixPath();
+            yield util.fixPath();
             // eslint-disable-next-line no-console
             console.log(process.env.PATH);
             core.endGroup();
@@ -1133,6 +1133,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 const io = __importStar(__webpack_require__(1));
 const core = __importStar(__webpack_require__(470));
+const exec = __importStar(__webpack_require__(986));
 const path = __importStar(__webpack_require__(622));
 function fixPath() {
     var _a;
@@ -1149,6 +1150,12 @@ function fixPath() {
     });
 }
 exports.fixPath = fixPath;
+function updateSubmodules() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return exec.exec('git', ['submodule', 'update', '--init', '--recursive']);
+    });
+}
+exports.updateSubmodules = updateSubmodules;
 
 
 /***/ }),

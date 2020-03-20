@@ -24,7 +24,7 @@
 import * as core from '@actions/core'
 import * as io from '@actions/io'
 import * as exec from '@actions/exec'
-import {fixPath} from './util'
+import * as util from './util'
 
 async function run(): Promise<void> {
   try {
@@ -45,7 +45,7 @@ async function run(): Promise<void> {
     // update git submodule
     if (submoduleUpdate !== 'false') {
       core.startGroup('Updating Git Submodules')
-      await exec.exec('git', ['submodule', 'update', '--init', '--recursive'])
+      await util.updateSubmodules()
       core.endGroup()
     }
 
@@ -58,7 +58,7 @@ async function run(): Promise<void> {
 
     //fix path by removing sh.exe
     core.startGroup('Fixing Path')
-    await fixPath()
+    await util.fixPath()
     // eslint-disable-next-line no-console
     console.log(process.env.PATH)
     core.endGroup()

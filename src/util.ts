@@ -22,6 +22,7 @@
  */
 import * as io from '@actions/io'
 import * as core from '@actions/core'
+import * as exec from '@actions/exec'
 import * as path from 'path'
 
 export async function fixPath(): Promise<void> {
@@ -36,4 +37,8 @@ export async function fixPath(): Promise<void> {
       await fixPath()
     }
   }
+}
+
+export async function updateSubmodules(): Promise<number> {
+  return exec.exec('git', ['submodule', 'update', '--init', '--recursive'])
 }

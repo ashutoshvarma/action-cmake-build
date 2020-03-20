@@ -87,22 +87,22 @@ async function run(): Promise<void> {
     )
 
     core.startGroup('Configure CMake')
-    CRunner.configure()
+    await CRunner.configure()
     core.endGroup()
 
     core.startGroup('Building Project')
-    CRunner.build()
+    await CRunner.build()
     core.endGroup()
 
     if (installBuild !== 'false') {
       core.startGroup('Installing Build')
-      CRunner.install()
+      await CRunner.install()
       core.endGroup()
     }
 
     if (runTest !== 'false') {
       core.startGroup('Running CTest')
-      CRunner.test()
+      await CRunner.test()
       core.endGroup()
     }
   } catch (error) {

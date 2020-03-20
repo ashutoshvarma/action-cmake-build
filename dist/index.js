@@ -968,7 +968,7 @@ const core = __importStar(__webpack_require__(470));
 class CMakeRunner {
     constructor(rootDir, buildDir, options) {
         this._cmake = 'cmake';
-        this._ctest = 'cmake';
+        this._ctest = 'ctest';
         this._options = options;
         this._rootDir = rootDir;
         this._buildDir = buildDir;
@@ -1181,19 +1181,19 @@ function run() {
             };
             const CRunner = new runner.CMakeRunner(srcDir, buildDir, cOptions);
             core.startGroup('Configure CMake');
-            CRunner.configure();
+            yield CRunner.configure();
             core.endGroup();
             core.startGroup('Building Project');
-            CRunner.build();
+            yield CRunner.build();
             core.endGroup();
             if (installBuild !== 'false') {
                 core.startGroup('Installing Build');
-                CRunner.install();
+                yield CRunner.install();
                 core.endGroup();
             }
             if (runTest !== 'false') {
                 core.startGroup('Running CTest');
-                CRunner.test();
+                yield CRunner.test();
                 core.endGroup();
             }
         }

@@ -2,38 +2,51 @@ name: 'Build CMake'
 description: 'Configure, Build and Test a CMake project'
 author: 'Ashutosh Varma'
 inputs:
-  build-type:              
-    description: 'CMake build type (Release, Debug, MinSizeRel, RelWithDebInfo)'
-    default: 'Release'
-  cc:
-    description: 'C Compiler for toolchain'
-    default: 'gcc'
-  cxx:
-    description: 'C++ Compiler for toolchain'
-    default: 'g++'
-  target:
-    description: CMake build target
-  parallel:
-    description: Number of concurrent jobs for build and test
-    default: 4
   build-dir:
     description: Build directory where build files will be generated
     default: ${{ runner.workspace }}/build
+    required: true
+  build-type:              
+    description: 'CMake build type (Release, Debug, MinSizeRel, RelWithDebInfo)'
+    default: 'Release'
+    required: true
+  cc:
+    description: 'C Compiler for toolchain'
+    required: false
+  cxx:
+    description: 'C++ Compiler for toolchain'
+    required: false
+  target:
+    description: CMake build target
+    required: false
+  parallel:
+    description: Number of concurrent jobs for build and test
+    default: '4'
+    required: false
   run-test:
     description: Run CTest or not
-    default: false
+    default: 'false'
+    required: false
   install-build:
     description: Run 'cmake --install' or not
-    default: false
+    default: 'false'
+    required: false
   submodule-update:
     description: Update git submodules
-    default: false
-  options:
+    default: 'false'
+    required: false
+  configure-options:
     description: Misc Options to pass to CMake while configuring project
+    required: false
   build-options:
     description: Misc Options to pass to CMake while building project using cmake --build
+    required: false
+  install-options:
+    description: Misc Options to pass to CMake while installing project using cmake --install
+    required: false
   ctest-options:
     description: Misc Options to pass to CTest
+    required: false
   
 runs:
   using: 'node12'

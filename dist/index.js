@@ -964,6 +964,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const exec = __importStar(__webpack_require__(986));
+const core = __importStar(__webpack_require__(470));
 class CMakeRunner {
     constructor(rootDir, buildDir, options) {
         this._cmake = 'cmake';
@@ -972,18 +973,29 @@ class CMakeRunner {
         this._rootDir = rootDir;
         this._buildDir = buildDir;
     }
+    run(executable, args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield exec.exec(executable, args);
+            }
+            catch (error) {
+                core.setFailed(error.message);
+            }
+            return -1;
+        });
+    }
     cmake(args) {
         return __awaiter(this, void 0, void 0, function* () {
             // console.log('cmake ' + args?.join(' '))
             // return new Promise<number>((resolve) => {})
-            return exec.exec(this._cmake, args);
+            return yield this.run(this._cmake, args);
         });
     }
     ctest(args) {
         return __awaiter(this, void 0, void 0, function* () {
             // console.log('cmake ' + args?.join(' '))
             // return new Promise<number>((resolve) => {})
-            return exec.exec(this._ctest, args);
+            return yield this.run(this._ctest, args);
         });
     }
     configure() {
@@ -1048,7 +1060,10 @@ class CMakeRunner {
             // '-C' is required for multiconfig build systems
             let execOptions = ['-C', this._options.buildType];
             if ((_a = this._options.extraArgs) === null || _a === void 0 ? void 0 : _a.extraTestArgs) {
-                execOptions = [...execOptions, ...this._options.extraArgs.extraTestArgs];
+                execOptions = [
+                    ...execOptions,
+                    ...this._options.extraArgs.extraTestArgs.split(' ')
+                ];
             }
             const result = this.ctest(execOptions);
             process.chdir(pwdCurrent);
@@ -1133,6 +1148,9 @@ function run() {
             const installOptions = core.getInput('install-options');
             const buildDir = core.getInput('build-dir');
             const srcDir = process.cwd();
+            if (!buildDir) {
+                throw Error('Build Directory is not specified');
+            }
             // update git submodule
             if (submoduleUpdate !== 'false') {
                 core.startGroup('Updating Git Submodules');

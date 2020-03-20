@@ -17,7 +17,7 @@ This acion does not manage dependencies for you, all the dependencies for your p
           cxx: g++
           build-type: Release
           # Extra options pass to cmake while configuring project
-          options: -DCMAKE_C_FLAGS=-w32 -DPNG_INCLUDE=OFF
+          configure-options: -DCMAKE_C_FLAGS=-w32 -DPNG_INCLUDE=OFF
           run-test: true
           ctest-options: -R mytest
           # install the build using cmake --install

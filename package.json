@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
+  "name": "action-cmake-build",
+  "version": "0.0.1",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Github action to Build & Test CMake projects",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,14 +15,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/ashutoshvarma/action-cmake-build.git"
   },
   "keywords": [
     "actions",
     "node",
-    "setup"
+    "setup",
+    "cmake"
   ],
-  "author": "YourNameOrOrganization",
+  "author": "Ashutosh Varma",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.0",
@@ -42,6 +43,7 @@
     "js-yaml": "^3.13.1",
     "prettier": "^1.19.1",
     "ts-jest": "^24.2.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.6.4",
+    "yaml": "^1.8.2"
   }
 }

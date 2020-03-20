@@ -941,6 +941,126 @@ module.exports = require("os");
 
 /***/ }),
 
+/***/ 123:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const exec = __importStar(__webpack_require__(986));
+class CMakeRunner {
+    constructor(rootDir, buildDir, options) {
+        this._cmake = 'cmake';
+        this._ctest = 'cmake';
+        this._options = options;
+        this._rootDir = rootDir;
+        this._buildDir = buildDir;
+    }
+    cmake(args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // console.log('cmake ' + args?.join(' '))
+            // return new Promise<number>((resolve) => {})
+            return exec.exec(this._cmake, args);
+        });
+    }
+    ctest(args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // console.log('cmake ' + args?.join(' '))
+            // return new Promise<number>((resolve) => {})
+            return exec.exec(this._ctest, args);
+        });
+    }
+    configure() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            let execOptions = [
+                `-DCMAKE_BUILD_TYPE=${this._options.buildType}`,
+                `-S${this._rootDir}`,
+                `-B${this._buildDir}`
+            ];
+            if ((_a = this._options.extraArgs) === null || _a === void 0 ? void 0 : _a.extraConfigArgs) {
+                execOptions = [
+                    ...this._options.extraArgs.extraConfigArgs.split(' '),
+                    ...execOptions
+                ];
+            }
+            return this.cmake(execOptions);
+        });
+    }
+    build() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            let execOptions = [
+                `--build`,
+                this._buildDir,
+                '--config',
+                this._options.buildType
+            ];
+            if (this._options.target) {
+                execOptions = [...execOptions, '--target', this._options.target];
+            }
+            if (this._options.parallel) {
+                execOptions = [...execOptions, '--parallel', this._options.parallel];
+            }
+            if ((_a = this._options.extraArgs) === null || _a === void 0 ? void 0 : _a.extraBuildArgs) {
+                execOptions = [
+                    ...execOptions,
+                    ...this._options.extraArgs.extraBuildArgs.split(' ')
+                ];
+            }
+            return this.cmake(execOptions);
+        });
+    }
+    install() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            let execOptions = [`--install`, this._buildDir];
+            if ((_a = this._options.extraArgs) === null || _a === void 0 ? void 0 : _a.extraInstallArgs) {
+                execOptions = [
+                    ...execOptions,
+                    ...this._options.extraArgs.extraInstallArgs.split(' ')
+                ];
+            }
+            return this.cmake(execOptions);
+        });
+    }
+    test() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const pwdCurrent = process.cwd();
+            process.chdir(this._buildDir);
+            // '-C' is required for multiconfig build systems
+            let execOptions = ['-C', this._options.buildType];
+            if ((_a = this._options.extraArgs) === null || _a === void 0 ? void 0 : _a.extraTestArgs) {
+                execOptions = [...execOptions, ...this._options.extraArgs.extraTestArgs];
+            }
+            const result = this.ctest(execOptions);
+            process.chdir(pwdCurrent);
+            return result;
+        });
+    }
+}
+exports.CMakeRunner = CMakeRunner;
+
+
+/***/ }),
+
 /***/ 129:
 /***/ (function(module) {
 
@@ -994,8 +1114,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const io = __importStar(__webpack_require__(1));
-const exec = __importStar(__webpack_require__(986));
 const util = __importStar(__webpack_require__(345));
+const runner = __importStar(__webpack_require__(123));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -1007,9 +1127,10 @@ function run() {
             const cxx = core.getInput('cxx');
             const target = core.getInput('target');
             const parallel = core.getInput('parallel');
-            const options = core.getInput('options').split(' ');
-            const ctestOptions = core.getInput('ctest-options').split(' ');
-            const buildOptions = core.getInput('build-options').split(' ');
+            const configureOptions = core.getInput('configure-options');
+            const ctestOptions = core.getInput('ctest-options');
+            const buildOptions = core.getInput('build-options');
+            const installOptions = core.getInput('install-options');
             const buildDir = core.getInput('build-dir');
             const srcDir = process.cwd();
             // update git submodule
@@ -1029,52 +1150,33 @@ function run() {
             // eslint-disable-next-line no-console
             console.log(process.env.PATH);
             core.endGroup();
-            //configure options
-            const configOptions = [
-                ...options,
-                `-DCMAKE_BUILD_TYPE=${buildType}`,
-                `-S${srcDir}`,
-                `-B${buildDir}`
-            ];
-            if (target !== '') {
-                buildOptions.push('--target');
-                buildOptions.push(target);
-            }
-            //Configure CMake
-            core.startGroup('Configure CMake');
-            yield exec.exec('cmake', configOptions);
-            core.endGroup();
-            //Build CMake Project
-            core.startGroup(`Build Target - ${target}`);
-            yield exec.exec('cmake', [
-                '--build',
-                buildDir,
-                '--config',
+            const cOptions = {
                 buildType,
-                // ...buildOptions,
-                `-j${parallel}`
-            ]);
+                target,
+                parallel,
+                extraArgs: {
+                    extraConfigArgs: configureOptions,
+                    extraBuildArgs: buildOptions,
+                    extraInstallArgs: installOptions,
+                    extraTestArgs: ctestOptions
+                }
+            };
+            const CRunner = new runner.CMakeRunner(srcDir, buildDir, cOptions);
+            core.startGroup('Configure CMake');
+            CRunner.configure();
             core.endGroup();
-            // Install Targets
+            core.startGroup('Building Project');
+            CRunner.build();
+            core.endGroup();
             if (installBuild !== 'false') {
-                core.startGroup(`Installing Build - ${installBuild}`);
-                yield exec.exec('cmake', ['--install', buildDir]);
+                core.startGroup('Installing Build');
+                CRunner.install();
                 core.endGroup();
             }
-            // Run Ctest
-            const sourceDir = process.cwd();
             if (runTest !== 'false') {
-                process.chdir(buildDir);
                 core.startGroup('Running CTest');
-                yield exec.exec('ctest', [
-                    // -C is required for MSBuild otherwise it won't run tests
-                    '-C',
-                    buildType,
-                    `-j${parallel}`,
-                    ...ctestOptions
-                ]);
+                CRunner.test();
                 core.endGroup();
-                process.chdir(sourceDir);
             }
         }
         catch (error) {

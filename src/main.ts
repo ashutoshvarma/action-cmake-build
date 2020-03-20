@@ -23,8 +23,8 @@
 
 import * as core from '@actions/core'
 import * as io from '@actions/io'
-import * as exec from '@actions/exec'
 import * as util from './util'
+import * as runner from './cmake_runner'
 
 async function run(): Promise<void> {
   try {
@@ -36,9 +36,10 @@ async function run(): Promise<void> {
     const cxx: string = core.getInput('cxx')
     const target: string = core.getInput('target')
     const parallel: string = core.getInput('parallel')
-    const options: string[] = core.getInput('options').split(' ')
-    const ctestOptions: string[] = core.getInput('ctest-options').split(' ')
-    const buildOptions: string[] = core.getInput('build-options').split(' ')
+    const configureOptions: string = core.getInput('configure-options')
+    const ctestOptions: string = core.getInput('ctest-options')
+    const buildOptions: string = core.getInput('build-options')
+    const installOptions: string = core.getInput('install-options')
     const buildDir: string = core.getInput('build-dir')
     const srcDir: string = process.cwd()
 
@@ -63,57 +64,42 @@ async function run(): Promise<void> {
     console.log(process.env.PATH)
     core.endGroup()
 
-    //configure options
-    const configOptions = [
-      ...options,
-      `-DCMAKE_BUILD_TYPE=${buildType}`,
-      `-S${srcDir}`,
-      `-B${buildDir}`
-    ]
-
-    if (target !== '') {
-      buildOptions.push('--target')
-      buildOptions.push(target)
-    }
-
-    //Configure CMake
-    core.startGroup('Configure CMake')
-    await exec.exec('cmake', configOptions)
-    core.endGroup()
-
-    //Build CMake Project
-    core.startGroup(`Build Target - ${target}`)
-    await exec.exec('cmake', [
-      '--build',
-      buildDir,
-      '--config',
+    const cOptions: runner.CMakeOptions = {
       buildType,
-      // ...buildOptions,
-      `-j${parallel}`
-    ])
+      target,
+      parallel,
+      extraArgs: {
+        extraConfigArgs: configureOptions,
+        extraBuildArgs: buildOptions,
+        extraInstallArgs: installOptions,
+        extraTestArgs: ctestOptions
+      }
+    }
+
+    const CRunner: runner.CMakeRunner = new runner.CMakeRunner(
+      srcDir,
+      buildDir,
+      cOptions
+    )
+
+    core.startGroup('Configure CMake')
+    CRunner.configure()
     core.endGroup()
 
-    // Install Targets
+    core.startGroup('Building Project')
+    CRunner.build()
+    core.endGroup()
+
     if (installBuild !== 'false') {
-      core.startGroup(`Installing Build - ${installBuild}`)
-      await exec.exec('cmake', ['--install', buildDir])
+      core.startGroup('Installing Build')
+      CRunner.install()
       core.endGroup()
     }
 
-    // Run Ctest
-    const sourceDir: string = process.cwd()
     if (runTest !== 'false') {
-      process.chdir(buildDir)
       core.startGroup('Running CTest')
-      await exec.exec('ctest', [
-        // -C is required for MSBuild otherwise it won't run tests
-        '-C',
-        buildType,
-        `-j${parallel}`,
-        ...ctestOptions
-      ])
+      CRunner.test()
       core.endGroup()
-      process.chdir(sourceDir)
     }
   } catch (error) {
     core.setFailed(error.message)

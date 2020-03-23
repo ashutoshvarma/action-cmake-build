@@ -23,5 +23,7 @@ jobs:
         operating-system: [ubuntu-latest, windows-latest, macos-latest]
     steps:
     - uses: actions/checkout@v1
-    - uses: ./
-      working-directory: test/DemoProject
+    - name: Run Action
+      uses: ./
+      with:
+        source-dir: test/DemoProject

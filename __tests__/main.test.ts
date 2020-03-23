@@ -29,7 +29,7 @@ test('test runs', () => {
   io.rmRF(buildDir)
   // cd into source dir
   process.env['INPUT_BUILD-DIR'] = buildDir
-  process.chdir(srcDir)
+  process.env['INPUT_SOURCE-DIR'] = srcDir
   const ip = path.join(__dirname, '..', 'lib', 'main.js')
   const options: cp.ExecSyncOptions = {
     env: process.env

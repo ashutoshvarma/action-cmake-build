@@ -1,12 +1,12 @@
 name: Main workflow
 on: [push, pull_request]
 jobs:
-  run:
-    name: Run
+  test:
+    name: Build & Test
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        operating-system: [ubuntu-latest, windows-latest]
+        operating-system: [ubuntu-latest]
     steps:
     - name: Checkout
       uses: actions/checkout@master
@@ -24,3 +24,14 @@ jobs:
 
     - name: npm test
       run: npm test
+
+  action-test:
+    name: Action Test
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./
+      - working-directory: test/DemoProject

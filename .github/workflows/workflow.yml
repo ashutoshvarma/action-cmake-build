@@ -23,5 +23,5 @@ jobs:
         operating-system: [ubuntu-latest, windows-latest, macos-latest]
     steps:
     - uses: actions/checkout@v1
-    - uses: ./
-    - working-directory: test/DemoProject
+      uses: ./
+      working-directory: test/DemoProject

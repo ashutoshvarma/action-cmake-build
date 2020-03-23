@@ -4,7 +4,7 @@ author: 'Ashutosh Varma'
 inputs:
   build-dir:
     description: Build directory where build files will be generated
-    default: ${{ runner.workspace }}/build
+    default: build
     required: true
   build-type:              
     description: 'CMake build type (Release, Debug, MinSizeRel, RelWithDebInfo)'

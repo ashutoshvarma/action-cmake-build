@@ -1147,7 +1147,7 @@ function run() {
             const buildOptions = core.getInput('build-options');
             const installOptions = core.getInput('install-options');
             const buildDir = core.getInput('build-dir');
-            const srcDir = process.cwd();
+            const srcDir = core.getInput('source-dir');
             if (!buildDir) {
                 throw Error('Build Directory is not specified');
             }

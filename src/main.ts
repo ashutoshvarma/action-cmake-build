@@ -41,7 +41,7 @@ async function run(): Promise<void> {
     const buildOptions: string = core.getInput('build-options')
     const installOptions: string = core.getInput('install-options')
     const buildDir: string = core.getInput('build-dir')
-    const srcDir: string = process.cwd()
+    const srcDir: string = core.getInput('source-dir')
 
     if (!buildDir) {
       throw Error('Build Directory is not specified')

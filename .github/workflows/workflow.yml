@@ -1,29 +1,19 @@
-name: Main workflow
-on: [push, pull_request]
+name: "Main Workflow"
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - master
+      - 'releases/*'
+
 jobs:
-  test:
-    name: Build & Test
-    runs-on: ${{ matrix.operating-system }}
-    strategy:
-      matrix:
-        operating-system: [ubuntu-latest]
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
-
-    - name: Set Node.js 10.x
-      uses: actions/setup-node@master
-      with:
-        node-version: 10.x
-
-    - name: npm install
-      run: npm install
-
-    - name: Lint
-      run: npm run format-check
-
-    - name: npm test
-      run: npm test
+    - uses: actions/checkout@v1
+    - run: |
+        npm install
+        npm run all
 
   action-test:
     name: Action Test
@@ -32,6 +22,6 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v1
-      - uses: ./
-      - working-directory: test/DemoProject
+    - uses: actions/checkout@v1
+    - uses: ./
+    - working-directory: test/DemoProject

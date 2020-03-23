@@ -30,7 +30,7 @@ test('test runs', () => {
   // cd into source dir
   process.env['INPUT_BUILD-DIR'] = buildDir
   process.env['INPUT_SOURCE-DIR'] = srcDir
-  const ip = path.join(__dirname, '..', 'lib', 'main.js')
+  const ip = path.join(__dirname, 'lib', 'main.js')
   const options: cp.ExecSyncOptions = {
     env: process.env
   }

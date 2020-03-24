@@ -32,7 +32,8 @@ test('test runs', () => {
   process.env['INPUT_SOURCE-DIR'] = srcDir
   const ip = path.join(__dirname, '..', 'lib', 'main.js')
   const options: cp.ExecSyncOptions = {
-    env: process.env
+    env: process.env,
+    stdio: 'inherit'
   }
   const spawnProc = cp.spawn('node', [ip], options)
   spawnProc.on('close', code => {

@@ -1,4 +1,4 @@
-![Main workflow](https://github.com/ashutoshvarma/action-cmake-build/workflows/Main%20workflow/badge.svg)
+![Main workflow](https://github.com/ashutoshvarma/action-cmake-build/workflows/Main%20Workflow/badge.svg)
 
 # action-cmake-build
 

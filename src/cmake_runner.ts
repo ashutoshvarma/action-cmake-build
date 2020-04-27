@@ -12,6 +12,7 @@ export interface CMakeOptions {
   buildType: string
   target?: string
   parallel?: string
+  wrapperCommand?: string
   extraArgs?: CMakeExtraArgs
 }
 
@@ -42,6 +43,13 @@ export class CMakeRunner {
     return await this.run(this._cmake, args)
   }
 
+  async wrapCmake(args: string[]): Promise<number> {
+    return await this.run(this._options.wrapperCommand || '', [
+      this._cmake,
+      ...args
+    ])
+  }
+
   async ctest(args?: string[]): Promise<number> {
     // console.log('cmake ' + args?.join(' '))
     // return new Promise<number>((resolve) => {})
@@ -61,7 +69,11 @@ export class CMakeRunner {
         ...execOptions
       ]
     }
-    return this.cmake(execOptions)
+    if (this._options.wrapperCommand) {
+      return this.wrapCmake(execOptions)
+    } else {
+      return this.cmake(execOptions)
+    }
   }
 
   async build(): Promise<number> {

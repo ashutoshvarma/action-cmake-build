@@ -42,6 +42,7 @@ async function run(): Promise<void> {
     const installOptions: string = core.getInput('install-options')
     const buildDir: string = core.getInput('build-dir')
     const srcDir: string = core.getInput('source-dir')
+    const wrapperCommand: string = core.getInput('wrapper-command')
 
     if (!buildDir) {
       throw Error('Build Directory is not specified')
@@ -72,6 +73,7 @@ async function run(): Promise<void> {
       buildType,
       target,
       parallel,
+      wrapperCommand,
       extraArgs: {
         extraConfigArgs: configureOptions,
         extraBuildArgs: buildOptions,

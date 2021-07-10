@@ -1079,6 +1079,14 @@ class CMakeRunner {
             return yield this.run(this._cmake, args);
         });
     }
+    wrapCmake(args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.run(this._options.wrapperCommand || '', [
+                this._cmake,
+                ...args
+            ]);
+        });
+    }
     ctest(args) {
         return __awaiter(this, void 0, void 0, function* () {
             // console.log('cmake ' + args?.join(' '))
@@ -1100,7 +1108,12 @@ class CMakeRunner {
                     ...execOptions
                 ];
             }
-            return this.cmake(execOptions);
+            if (this._options.wrapperCommand) {
+                return this.wrapCmake(execOptions);
+            }
+            else {
+                return this.cmake(execOptions);
+            }
         });
     }
     build() {
@@ -1248,6 +1261,7 @@ function run() {
             const installOptions = core.getInput('install-options');
             const buildDir = core.getInput('build-dir');
             const srcDir = core.getInput('source-dir');
+            const wrapperCommand = core.getInput('wrapper-command');
             if (!buildDir) {
                 throw Error('Build Directory is not specified');
             }
@@ -1272,6 +1286,7 @@ function run() {
                 buildType,
                 target,
                 parallel,
+                wrapperCommand,
                 extraArgs: {
                     extraConfigArgs: configureOptions,
                     extraBuildArgs: buildOptions,

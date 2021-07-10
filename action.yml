@@ -50,7 +50,10 @@ inputs:
   ctest-options:
     description: Misc Options to pass to CTest
     required: false
-  
+  wrapper-command:
+    description: Command that would setup environment and then invoke the camke command.  Example is emcmake from the Emscripten SDK.
+    required: false
+
 runs:
   using: 'node12'
   main: 'dist/index.js'
